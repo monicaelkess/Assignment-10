@@ -1,0 +1,171 @@
+<div class="min-h-screen bg-gray-50">
+  <!-- Page Header -->
+  <div class="bg-white">
+    <div class="container mx-auto px-4 py-6">
+      <h1 class="text-3xl font-bold text-gray-800 flex items-center gap-3">
+        <i class="fas fa-heart text-red-600"></i>
+        My Wishlist
+      </h1>
+      <p class="text-gray-600 mt-2">Your favorite products in one place</p>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading()" class="container mx-auto px-4 py-12">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div *ngFor="let i of [1,2,3,4]" class="bg-white rounded-lg shadow-sm p-4 animate-pulse">
+        <div class="bg-gray-200 h-48 rounded-lg mb-4"></div>
+        <div class="bg-gray-200 h-4 rounded w-3/4 mb-2"></div>
+        <div class="bg-gray-200 h-4 rounded w-1/2"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty Wishlist -->
+  <div *ngIf="!isLoading() && !wishlist().length" class="container mx-auto px-4 py-16">
+    <div class="flex flex-col items-center justify-center min-h-[60vh]">
+      <!-- Icon Circle -->
+      <div class="w-48 h-48 bg-gray-100 rounded-full flex items-center justify-center mb-8">
+        <i class="fas fa-heart text-gray-400 text-8xl"></i>
+      </div>
+
+      <!-- Text Content -->
+      <h2 class="text-3xl font-bold text-gray-900 mb-3">Your wishlist is empty</h2>
+      <p class="text-gray-600 mb-2">Looks like you haven't added any favorites yet.</p>
+      <p class="text-gray-600 mb-8">Start exploring and save your favorite products!</p>
+
+      <!-- Start Shopping Button -->
+      <button
+        (click)="continueShopping()"
+        class="bg-green-600 text-white px-8 py-3 rounded-lg hover:bg-green-700 transition-colors font-semibold text-base flex items-center gap-2"
+      >
+        Start Shopping
+        <i class="fas fa-arrow-right"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Wishlist Content -->
+  <div *ngIf="!isLoading() && wishlist().length" class="container mx-auto px-4 py-12">
+    <!-- Wishlist Header -->
+    <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
+      <div class="flex items-center justify-between">
+        <h2 class="text-xl font-bold text-gray-800">
+          {{ getWishlistCount() }} {{ getWishlistCount() === 1 ? 'Item' : 'Items' }} in Wishlist
+        </h2>
+        <button
+          (click)="clearWishlist()"
+          [disabled]="isUpdating()"
+          class="text-red-600 hover:text-red-800 font-semibold flex items-center gap-2 disabled:opacity-50"
+        >
+          <i class="fas fa-trash"></i>
+          Clear Wishlist
+        </button>
+      </div>
+    </div>
+
+    <!-- Wishlist Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div
+        *ngFor="let product of wishlist()"
+        class="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-lg transition-shadow duration-300 group relative"
+      >
+        <!-- Remove Button (Top Right) -->
+        <button
+          (click)="removeFromWishlist(product._id)"
+          [disabled]="isUpdating()"
+          class="absolute top-3 right-3 bg-white w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:bg-red-50 transition-colors z-10 disabled:opacity-50"
+        >
+          <i class="fas fa-times text-red-600"></i>
+        </button>
+
+        <!-- Product Image -->
+        <div class="relative overflow-hidden">
+          <a [routerLink]="['/product', product._id]">
+            <img
+              [src]="product.imageCover"
+              [alt]="product.title"
+              class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-300"
+            />
+          </a>
+
+          <!-- Sale Badge -->
+          <div *ngIf="product.priceAfterDiscount" class="absolute top-3 left-3 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
+            SALE
+          </div>
+        </div>
+
+        <!-- Product Info -->
+        <div class="p-4">
+          <!-- Category -->
+          <p class="text-sm text-emerald-600 font-semibold mb-1">
+            {{ product.category?.name }}
+          </p>
+
+          <!-- Title -->
+          <a [routerLink]="['/product', product._id]">
+            <h3 class="font-semibold text-gray-800 mb-2 hover:text-emerald-600 transition-colors line-clamp-2">
+              {{ product.title }}
+            </h3>
+          </a>
+
+          <!-- Rating -->
+          <div class="flex items-center gap-2 mb-3">
+            <div class="flex text-yellow-400 text-sm">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+            </div>
+            <span class="text-sm text-gray-600">{{ product.ratingsAverage }}</span>
+          </div>
+
+          <!-- Price -->
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <span class="text-2xl font-bold text-gray-800">${{ product.price }}</span>
+              <span *ngIf="product.priceAfterDiscount" class="text-sm text-gray-400 line-through ml-2">
+                ${{ product.priceAfterDiscount }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="space-y-2">
+            <!-- Add to Cart -->
+            <button
+              (click)="addToCart(product._id)"
+              [disabled]="isUpdating()"
+              class="w-full bg-emerald-600 text-white py-3 rounded-lg hover:bg-emerald-700 transition-colors flex items-center justify-center gap-2 font-semibold disabled:opacity-50"
+            >
+              <i class="fas fa-shopping-cart"></i>
+              Add to Cart
+            </button>
+
+            <!-- Add to Cart & Remove -->
+            <button
+              (click)="addToCartAndRemove(product._id)"
+              [disabled]="isUpdating()"
+              class="w-full bg-white border-2 border-emerald-600 text-emerald-600 py-3 rounded-lg hover:bg-emerald-50 transition-colors flex items-center justify-center gap-2 font-semibold disabled:opacity-50"
+            >
+              <i class="fas fa-cart-plus"></i>
+              Move to Cart
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Continue Shopping -->
+    <div class="mt-8 text-center">
+      <button
+        (click)="continueShopping()"
+        class="text-emerald-600 hover:text-emerald-800 font-semibold flex items-center gap-2 mx-auto"
+      >
+        <i class="fas fa-arrow-left"></i>
+        Continue Shopping
+      </button>
+    </div>
+  </div>
+</div>

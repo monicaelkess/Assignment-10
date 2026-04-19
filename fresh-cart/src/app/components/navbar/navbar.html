@@ -1,0 +1,284 @@
+<!-- ===== TOP BAR ===== -->
+<div class="bg-emerald-800 text-white text-sm hidden lg:block">
+  <div class="container mx-auto px-4 py-2 flex justify-between items-center">
+    <div class="flex items-center gap-4">
+      <span class="flex items-center gap-1">
+        🚚 Free Shipping on Orders 500 EGP
+      </span>
+      <span class="text-emerald-300">|</span>
+      <span>✨ New Arrivals Daily</span>
+    </div>
+    <div class="flex items-center gap-4">
+      <a href="tel:+18001234567" class="hover:text-emerald-200 transition">
+        📞 +1 (800) 123-4567
+      </a>
+      <span class="text-emerald-300">|</span>
+      <a href="mailto:support@freshcart.com" class="hover:text-emerald-200 transition">
+        ✉️ support&#64;freshcart.com
+      </a>
+      <span class="text-emerald-300">|</span>
+      <span [hidden]="!authService.isLoggedIn()" class="flex items-center gap-3">
+        <span class="font-medium uppercase tracking-wide">{{ authService.userName() }}</span>
+        <span class="text-emerald-300">|</span>
+        <button (click)="logout()" class="hover:text-emerald-200 transition">
+          <i class="fas fa-sign-out-alt mr-1"></i> Sign Out
+        </button>
+      </span>
+      <a [hidden]="authService.isLoggedIn()" routerLink="/login" class="hover:text-emerald-200 transition">Sign In</a>
+      <a [hidden]="authService.isLoggedIn()" routerLink="/register" class="bg-emerald-600 hover:bg-emerald-500 px-3 py-1 rounded-full transition">
+        Sign Up
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MAIN NAVBAR ===== -->
+<nav class="bg-white shadow-md sticky top-0 z-50">
+  <div class="container mx-auto px-4">
+    <div class="flex justify-between items-center h-16">
+
+      <!-- Logo -->
+      <a routerLink="/home" class="flex items-center gap-2">
+        <span class="text-2xl font-bold text-emerald-600">🛒 FreshCart</span>
+      </a>
+
+      <!-- Search Bar -->
+      <form (ngSubmit)="onSearch()" class="hidden md:flex items-center flex-1 max-w-xl mx-6">
+        <div class="relative w-full">
+          <input type="text" [(ngModel)]="searchQuery" name="search"
+                 placeholder="Search for products, brands and more..."
+                 class="w-full pl-4 pr-12 py-2.5 rounded-full border border-gray-300 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 text-sm">
+          <button type="submit"
+                  class="absolute right-1 top-1/2 -translate-y-1/2 bg-emerald-600 hover:bg-emerald-700 text-white p-2 rounded-full transition">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+            </svg>
+          </button>
+        </div>
+      </form>
+
+      <!-- Desktop Links -->
+      <div class="hidden lg:flex items-center gap-1">
+        @for (link of navLinks; track link.route) {
+          <a [routerLink]="link.route" routerLinkActive="text-emerald-600 bg-emerald-50"
+             class="px-4 py-2 rounded-lg font-medium text-gray-700 hover:text-emerald-600 hover:bg-emerald-50 transition">
+            {{ link.label }}
+          </a>
+        }
+
+        <!-- Categories Dropdown -->
+        <div class="relative">
+          <button (click)="toggleCategories()"
+                  class="px-4 py-2 rounded-lg font-medium text-gray-700 hover:text-emerald-600 hover:bg-emerald-50 transition flex items-center gap-1">
+            Categories
+            <svg class="w-4 h-4 transition-transform" [class.rotate-180]="isCategoriesOpen()"
+                 fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </button>
+          <div [class.hidden]="!isCategoriesOpen()" class="absolute top-full left-0 mt-1 w-64 bg-white rounded-xl shadow-lg border py-2 z-50">
+            <a routerLink="/categories"
+               class="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 transition font-medium">
+              <span class="w-8 h-8 bg-emerald-100 rounded-full flex items-center justify-center">
+                <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                </svg>
+              </span>
+              All Categories
+            </a>
+            <hr class="my-1">
+            @for (cat of categories(); track cat._id) {
+              <a routerLink="/products" [queryParams]="{category: cat._id}"
+                 class="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 transition">
+                <img [src]="cat.image" [alt]="cat.name"
+                     class="w-8 h-8 rounded-full object-cover border border-gray-200" />
+                {{ cat.name }}
+              </a>
+            }
+          </div>
+        </div>
+
+        @for (link of afterCategoryLinks; track link.route) {
+          <a [routerLink]="link.route" routerLinkActive="text-emerald-600 bg-emerald-50"
+             class="px-4 py-2 rounded-lg font-medium text-gray-700 hover:text-emerald-600 hover:bg-emerald-50 transition">
+            {{ link.label }}
+          </a>
+        }
+      </div>
+
+      <!-- Support -->
+      <a routerLink="/support" class="hidden lg:flex items-center gap-2 text-gray-700 hover:text-emerald-600 transition">
+        <div class="bg-emerald-100 text-emerald-600 p-2 rounded-full">
+         <i  class="fas fa-headset text-emerald-800"></i>
+        </div>
+        <div class="leading-tight">
+          <span class="block text-xs font-semibold text-gray-900">Support</span>
+          <span class="block text-xs text-gray-500">24/7 Help</span>
+        </div>
+      </a>
+
+      <!-- Right Icons -->
+      <div class="flex items-center gap-3">
+        <!-- Logged-in icons -->
+        <div [hidden]="!authService.isLoggedIn()" class="flex items-center gap-3">
+          <!-- Wishlist -->
+          <a routerLink="/wishlist"
+             class="relative p-2 text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 rounded-full transition">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+            </svg>
+          </a>
+
+          <!-- Cart -->
+          <a routerLink="/cart"
+             class="relative p-2 text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 rounded-full transition">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z"/>
+            </svg>
+            <span [hidden]="cartService.cartCount() === 0"
+                  class="absolute -top-1 -right-1 bg-emerald-600 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
+              {{ cartService.cartCount() }}
+            </span>
+          </a>
+
+          <!-- Profile Dropdown -->
+          <div class="relative hidden lg:block">
+            <button (click)="toggleProfile()"
+                    class="p-2 text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 rounded-full transition">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+              </svg>
+            </button>
+            <div [class.hidden]="!isProfileOpen()" class="absolute right-0 top-full mt-1 w-56 bg-white rounded-xl shadow-lg border py-2 z-50">
+              <!-- User info header -->
+              <div class="flex items-center gap-3 px-4 py-3 border-b">
+                <div class="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center shrink-0">
+                  <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                  </svg>
+                </div>
+                <div class="overflow-hidden">
+                  <p class="font-semibold text-gray-900 text-sm truncate uppercase">{{ authService.userName() }}</p>
+                  <p class="text-xs text-gray-500 truncate">{{ authService.userEmail() }}</p>
+                </div>
+              </div>
+              <!-- Menu items -->
+              <a routerLink="/profile" (click)="toggleProfile()"
+                 class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 transition text-sm">
+                <i class="fas fa-user w-4 text-center"></i> My Profile
+              </a>
+              <a routerLink="/orders" (click)="toggleProfile()"
+                 class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 transition text-sm">
+                <i class="fas fa-box w-4 text-center"></i> My Orders
+              </a>
+              <a routerLink="/wishlist" (click)="toggleProfile()"
+                 class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 transition text-sm">
+                <i class="fas fa-heart w-4 text-center"></i> My Wishlist
+              </a>
+              <a routerLink="/addresses" (click)="toggleProfile()"
+                 class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 transition text-sm">
+                <i class="fas fa-map-marker-alt w-4 text-center"></i> Addresses
+              </a>
+              <a routerLink="/settings" (click)="toggleProfile()"
+                 class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 transition text-sm">
+                <i class="fas fa-cog w-4 text-center"></i> Settings
+              </a>
+              <hr class="my-1">
+              <button (click)="logout()"
+                      class="w-full flex items-center gap-2 px-4 py-2 text-red-600 hover:bg-red-50 transition text-sm">
+                <i class="fas fa-sign-out-alt w-4 text-center"></i> Sign Out
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sign In Button (not logged in) -->
+        <a [hidden]="authService.isLoggedIn()" routerLink="/login"
+           class="hidden lg:flex items-center gap-2 bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 transition font-medium">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+          </svg>
+          Sign In
+        </a>
+
+        <!-- Mobile Menu Button -->
+        <button (click)="toggleMobileMenu()"
+                class="lg:hidden p-2 text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path [hidden]="!isMobileMenuOpen()" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            <path [hidden]="isMobileMenuOpen()" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== MOBILE MENU ===== -->
+  <div [class.hidden]="!isMobileMenuOpen()" class="lg:hidden border-t bg-white">
+    <div class="container mx-auto px-4 py-4 space-y-2">
+      <!-- Mobile Search -->
+      <form (ngSubmit)="onSearch(); toggleMobileMenu()" class="relative">
+        <input type="text" [(ngModel)]="searchQuery" name="mobileSearch"
+               placeholder="Search for products, brands and more..."
+               class="w-full pl-4 pr-12 py-3 rounded-lg border border-gray-300 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 text-sm">
+        <button type="submit"
+                class="absolute right-2 top-1/2 -translate-y-1/2 bg-emerald-600 hover:bg-emerald-700 text-white p-2 rounded-full transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+          </svg>
+        </button>
+      </form>
+      <hr class="my-2">
+      @for (link of navLinks; track link.route) {
+        <a [routerLink]="link.route" (click)="toggleMobileMenu()"
+           class="block px-4 py-3 rounded-lg text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 font-medium transition">
+          {{ link.label }}
+        </a>
+      }
+      <a routerLink="/categories" (click)="toggleMobileMenu()"
+         class="block px-4 py-3 rounded-lg text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 font-medium transition">
+        Categories
+      </a>
+      @for (link of afterCategoryLinks; track link.route) {
+        <a [routerLink]="link.route" (click)="toggleMobileMenu()"
+           class="block px-4 py-3 rounded-lg text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 font-medium transition">
+          {{ link.label }}
+        </a>
+      }
+      <hr class="my-2">
+      <!-- Mobile logged-in links -->
+      <div [hidden]="!authService.isLoggedIn()">
+        <a routerLink="/wishlist" (click)="toggleMobileMenu()"
+           class="block px-4 py-3 rounded-lg text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 font-medium transition">
+          <i class="fas fa-heart mr-2"></i> My Wishlist
+        </a>
+        <a routerLink="/cart" (click)="toggleMobileMenu()"
+           class="block px-4 py-3 rounded-lg text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 font-medium transition">
+          <i class="fas fa-shopping-cart mr-2"></i> My Cart
+        </a>
+        <button (click)="logout(); toggleMobileMenu()"
+                class="w-full text-left px-4 py-3 rounded-lg text-red-600 font-medium">
+          <i class="fas fa-sign-out-alt mr-2"></i> Sign Out
+        </button>
+      </div>
+      <!-- Mobile not-logged-in links -->
+      <div [hidden]="authService.isLoggedIn()">
+        <a routerLink="/login" (click)="toggleMobileMenu()"
+           class="block px-4 py-3 rounded-lg text-emerald-600 font-medium">
+          Sign In
+        </a>
+        <a routerLink="/register" (click)="toggleMobileMenu()"
+           class="block px-4 py-3 bg-emerald-600 text-white rounded-lg text-center font-medium">
+          Sign Up
+        </a>
+      </div>
+    </div>
+  </div>
+</nav>

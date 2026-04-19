@@ -1,0 +1,186 @@
+/* Loading Animation */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Smooth Transitions */
+a, img, div {
+  transition: all 0.3s ease;
+}
+
+/* Brand Card Hover Effect */
+.group:hover {
+  transform: translateY(-5px);
+}
+
+/* Image Effects */
+.group img {
+  filter: grayscale(100%);
+  transition: all 0.5s ease;
+}
+
+.group:hover img {
+  filter: grayscale(0%);
+  transform: scale(1.1);
+}
+
+/* Aspect Ratio */
+.aspect-square {
+  aspect-ratio: 1 / 1;
+}
+
+/* Card Entry Animation */
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.group {
+  animation: fadeInScale 0.5s ease-out;
+}
+
+/* Stagger animation for grid items */
+.group:nth-child(1) { animation-delay: 0.05s; }
+.group:nth-child(2) { animation-delay: 0.1s; }
+.group:nth-child(3) { animation-delay: 0.15s; }
+.group:nth-child(4) { animation-delay: 0.2s; }
+.group:nth-child(5) { animation-delay: 0.25s; }
+.group:nth-child(6) { animation-delay: 0.3s; }
+.group:nth-child(7) { animation-delay: 0.35s; }
+.group:nth-child(8) { animation-delay: 0.4s; }
+.group:nth-child(9) { animation-delay: 0.45s; }
+.group:nth-child(10) { animation-delay: 0.5s; }
+.group:nth-child(11) { animation-delay: 0.55s; }
+.group:nth-child(12) { animation-delay: 0.6s; }
+
+/* Border Animation */
+.border-2 {
+  transition: border-color 0.3s ease;
+}
+
+/* Overlay Effects */
+.absolute.inset-0 {
+  transition: opacity 0.3s ease;
+}
+
+/* Badge Float Animation */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+.fa-arrow-right {
+  animation: float 2s ease-in-out infinite;
+}
+
+/* Gradient Background Animation */
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.bg-gradient-to-r {
+  background-size: 200% auto;
+  animation: gradientShift 3s ease infinite;
+}
+
+/* Button Hover Effects */
+button, a {
+  transition: all 0.3s ease;
+}
+
+button:hover, a:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+button:active, a:active {
+  transform: translateY(0);
+}
+
+/* Icon Circle Animations */
+@keyframes pulse-grow {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.w-16.h-16 {
+  animation: pulse-grow 2s ease-in-out infinite;
+}
+
+/* Why Shop Section */
+.grid > div {
+  animation: fadeInScale 0.6s ease-out;
+}
+
+.grid > div:nth-child(1) { animation-delay: 0.1s; }
+.grid > div:nth-child(2) { animation-delay: 0.2s; }
+.grid > div:nth-child(3) { animation-delay: 0.3s; }
+
+/* Grayscale to Color Transition */
+.filter {
+  -webkit-filter: grayscale(100%);
+  filter: grayscale(100%);
+}
+
+.grayscale-0 {
+  -webkit-filter: grayscale(0%);
+  filter: grayscale(0%);
+}
+
+/* Responsive Grid Gap */
+@media (max-width: 640px) {
+  .grid {
+    gap: 0.75rem;
+  }
+  
+  .group {
+    padding: 1rem;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 1024px) {
+  .grid {
+    gap: 1rem;
+  }
+}
+
+/* Brand Name Text Shadow */
+.text-white {
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* Hover Border Glow */
+.group:hover {
+  box-shadow: 0 0 20px rgba(147, 51, 234, 0.3);
+}

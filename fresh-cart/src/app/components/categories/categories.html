@@ -1,0 +1,115 @@
+<div class="min-h-screen bg-gray-50">
+  <!-- Page Header -->
+  <div class="bg-white border-b">
+    <div class="container mx-auto px-4 py-6">
+      <h1 class="text-3xl font-bold text-gray-800 flex items-center gap-3">
+        <i class="fas fa-th-large text-emrald-600"></i>
+        All Categories
+      </h1>
+      <p class="text-gray-600 mt-2">Browse products by category</p>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading()" class="container mx-auto px-4 py-12">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <div *ngFor="let i of [1,2,3,4,5,6,7,8]" class="bg-white rounded-lg shadow-sm overflow-hidden animate-pulse">
+        <div class="bg-gray-200 h-64"></div>
+        <div class="p-4">
+          <div class="bg-gray-200 h-6 rounded w-3/4 mb-2"></div>
+          <div class="bg-gray-200 h-4 rounded w-1/2"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Categories Content -->
+  <div *ngIf="!isLoading()" class="container mx-auto px-4 py-12">
+    <!-- Categories Info -->
+    <div class="bg-white rounded-lg shadow-sm p-6 mb-8">
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-2xl font-bold text-gray-800 mb-2">Explore Our Categories</h2>
+          <p class="text-gray-600">
+            Discover {{ getCategoriesCount() }} amazing categories with thousands of products
+          </p>
+        </div>
+        <div class="hidden md:flex items-center gap-2 text-gray-400">
+          <i class="fas fa-grid-2 text-2xl"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Categories Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <a
+        *ngFor="let category of categories()"
+        [routerLink]="['/products']"
+        [queryParams]="{category: category._id}"
+        class="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-xl transition-all duration-300 group cursor-pointer"
+      >
+        <!-- Category Image -->
+        <div class="relative overflow-hidden h-64 bg-gradient-to-br from-emerald-50 to-purple-50">
+          <img
+            [src]="category.image"
+            [alt]="category.name"
+            class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+          />
+          
+          <!-- Overlay on Hover -->
+          <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-300 flex items-center justify-center">
+            <span class="text-white font-bold text-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center gap-2">
+              <i class="fas fa-arrow-right"></i>
+              Browse Products
+            </span>
+          </div>
+        </div>
+
+        <!-- Category Info -->
+        <div class="p-6">
+          <h3 class="text-xl font-bold text-gray-800 mb-2 group-hover:text-emerald-600 transition-colors">
+            {{ category.name }}
+          </h3>
+          <p class="text-gray-600 text-sm flex items-center gap-2">
+            <i class="fas fa-box text-emerald-600"></i>
+            Explore Collection
+          </p>
+        </div>
+
+        <!-- Bottom Border Animation -->
+        <div class="h-1 bg-gradient-to-r from-emerald-600 to-purple-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
+      </a>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!isLoading() && categories().length === 0" class="flex flex-col items-center justify-center min-h-[50vh]">
+      <div class="w-48 h-48 bg-gray-100 rounded-full flex items-center justify-center mb-8">
+        <i class="fas fa-th-large text-gray-400 text-8xl"></i>
+      </div>
+      <h2 class="text-3xl font-bold text-gray-900 mb-3">No categories found</h2>
+      <p class="text-gray-600 mb-8">Please check back later!</p>
+    </div>
+
+    <!-- Bottom CTA -->
+    <div *ngIf="!isLoading() && categories().length > 0" class="mt-12 bg-gradient-to-r from-emerald-600 to-purple-600 rounded-lg p-8 text-center text-white">
+      <h3 class="text-2xl font-bold mb-4">Can't Find What You're Looking For?</h3>
+      <p class="mb-6 text-emerald-100">Browse all our products or use the search feature</p>
+      <div class="flex gap-4 justify-center flex-wrap">
+        <a
+          routerLink="/products"
+          class="bg-white text-emerald-600 px-6 py-3 rounded-lg hover:bg-gray-100 transition-colors font-semibold flex items-center gap-2"
+        >
+          <i class="fas fa-shopping-bag"></i>
+          View All Products
+        </a>
+        <a
+          routerLink="/brands"
+          class="bg-transparent border-2 border-white text-white px-6 py-3 rounded-lg hover:bg-white hover:text-emerald-600 transition-colors font-semibold flex items-center gap-2"
+        >
+          <i class="fas fa-tags"></i>
+          Browse Brands
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

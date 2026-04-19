@@ -1,0 +1,153 @@
+<div class="min-h-screen bg-gray-50">
+
+  <!-- ===== GREEN HEADER BANNER ===== -->
+  <div class="bg-gradient-to-r from-emerald-600 to-emerald-400 text-white">
+    <div class="container mx-auto px-4 py-3 text-sm text-emerald-100">
+      <a routerLink="/home" class="hover:text-white transition">Home</a>
+      <span class="mx-2">/</span>
+      <span class="text-white font-medium">My Profile</span>
+    </div>
+    <div class="container mx-auto px-4 pb-8 pt-4 flex items-center gap-4">
+      <div class="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center">
+        <i class="fas fa-user text-3xl text-white"></i>
+      </div>
+      <div>
+        <h1 class="text-3xl font-bold">My Profile</h1>
+        <p class="text-emerald-100 mt-1">Manage your personal information</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== CONTENT ===== -->
+  <div class="container mx-auto px-4 py-8">
+    <div class="flex flex-col lg:flex-row gap-6">
+
+      <!-- ===== SIDEBAR ===== -->
+      <aside class="w-full lg:w-64 shrink-0">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+          <div class="px-4 py-3  bg-gray-50">
+            <h2 class="font-semibold text-gray-700 text-sm uppercase tracking-wide">My Account</h2>
+          </div>
+          <nav class="py-2">
+            @for (link of sidebarLinks; track link.route) {
+              <a [routerLink]="link.route" routerLinkActive="bg-emerald-50 text-emerald-600 border-r-4 border-emerald-600 font-semibold"
+                 class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 transition text-sm">
+                <i [class]="link.icon + ' w-4 text-center'"></i>
+                {{ link.label }}
+                <i class="fas fa-chevron-right ml-auto text-xs text-gray-400"></i>
+              </a>
+            }
+          </nav>
+        </div>
+      </aside>
+
+      <!-- ===== MAIN CONTENT ===== -->
+      <main class="flex-1">
+
+        <!-- Success banner -->
+        @if (saveSuccess()) {
+          <div class="mb-4 flex items-center gap-2 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-xl px-4 py-3 text-sm">
+            <i class="fas fa-check-circle text-emerald-500"></i>
+            Profile updated successfully!
+          </div>
+        }
+
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100">
+          <!-- Card header -->
+          <div class="flex items-center justify-between px-6 py-4">
+            <h2 class="font-semibold text-gray-800 text-lg">Personal Information</h2>
+            @if (!isEditing()) {
+              <button (click)="startEdit()"
+                      class="flex items-center gap-2 text-sm text-emerald-600 hover:text-emerald-700 font-medium transition">
+                <i class="fas fa-pen"></i> Edit Profile
+              </button>
+            }
+          </div>
+
+          <!-- View mode -->
+          @if (!isEditing()) {
+            <div class="px-6 py-6">
+              <!-- Avatar + name -->
+              <div class="flex items-center gap-4 mb-8">
+                <div class="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center shrink-0">
+                  <i class="fas fa-user text-3xl text-emerald-600"></i>
+                </div>
+                <div>
+                  <p class="text-xl font-bold text-gray-900">{{ profileData.name || '—' }}</p>
+                  <p class="text-sm text-gray-500 mt-0.5">{{ profileData.email || '—' }}</p>
+                </div>
+              </div>
+
+              <!-- Info fields -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">Full Name</p>
+                  <p class="text-gray-800 font-medium">{{ profileData.name || '—' }}</p>
+                </div>
+                <div>
+                  <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">Email Address</p>
+                  <p class="text-gray-800 font-medium">{{ profileData.email || '—' }}</p>
+                </div>
+                <div>
+                  <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">Phone Number</p>
+                  <p class="text-gray-800 font-medium">{{ profileData.phone || '—' }}</p>
+                </div>
+              </div>
+            </div>
+          }
+
+          <!-- Edit mode -->
+          @if (isEditing()) {
+            <form (ngSubmit)="saveProfile()" class="px-6 py-6">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <!-- Name -->
+                <div class="md:col-span-2">
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                  <input type="text" [(ngModel)]="editData.name" name="name" required
+                         placeholder="Enter your full name"
+                         class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 text-sm" />
+                </div>
+                <!-- Email -->
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                  <input type="email" [(ngModel)]="editData.email" name="email" required
+                         placeholder="Enter your email"
+                         class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 text-sm" />
+                </div>
+                <!-- Phone -->
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                  <input type="tel" [(ngModel)]="editData.phone" name="phone"
+                         placeholder="Enter your phone number"
+                         class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 text-sm" />
+                </div>
+              </div>
+
+              <!-- Actions -->
+              <div class="flex items-center gap-3 pt-4 border-t">
+                <button type="submit" [disabled]="isSaving()"
+                        class="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-60 text-white px-6 py-2.5 rounded-lg font-medium text-sm transition">
+                  @if (isSaving()) {
+                    <svg class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+                    </svg>
+                    Saving...
+                  } @else {
+                    <i class="fas fa-save"></i> Save Changes
+                  }
+                </button>
+                <button type="button" (click)="cancelEdit()"
+                        class="px-6 py-2.5 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 font-medium text-sm transition">
+                  Cancel
+                </button>
+              </div>
+            </form>
+          }
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+</div>

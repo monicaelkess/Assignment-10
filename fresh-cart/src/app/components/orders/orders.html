@@ -1,0 +1,136 @@
+<div class="min-h-screen bg-gray-50">
+
+  <!-- ===== GREEN HEADER BANNER ===== -->
+  <div class="bg-gradient-to-r from-emerald-600 to-emerald-400 text-white">
+    <div class="container mx-auto px-4 py-3 text-sm text-emerald-100">
+      <a routerLink="/home" class="hover:text-white transition">Home</a>
+      <span class="mx-2">/</span>
+      <span class="text-white font-medium">My Orders</span>
+    </div>
+    <div class="container mx-auto px-4 pb-8 pt-4 flex items-center gap-4">
+      <div class="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center">
+        <i class="fas fa-box text-3xl text-white"></i>
+      </div>
+      <div>
+        <h1 class="text-3xl font-bold">My Orders</h1>
+        <p class="text-emerald-100 mt-1">Track and manage your orders</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== CONTENT ===== -->
+  <div class="container mx-auto px-4 py-8">
+    <div class="flex flex-col lg:flex-row gap-6">
+
+      <!-- ===== SIDEBAR ===== -->
+      <aside class="w-full lg:w-64 shrink-0">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+          <div class="px-4 py-3  bg-gray-50">
+            <h2 class="font-semibold text-gray-700 text-sm uppercase tracking-wide">My Account</h2>
+          </div>
+          <nav class="py-2">
+            @for (link of sidebarLinks; track link.route) {
+              <a [routerLink]="link.route" routerLinkActive="bg-emerald-50 text-emerald-600 border-r-4 border-emerald-600 font-semibold"
+                 class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 transition text-sm">
+                <i [class]="link.icon + ' w-4 text-center'"></i>
+                {{ link.label }}
+                <i class="fas fa-chevron-right ml-auto text-xs text-gray-400"></i>
+              </a>
+            }
+          </nav>
+        </div>
+      </aside>
+
+      <!-- ===== MAIN CONTENT ===== -->
+      <main class="flex-1">
+
+        <!-- Loading -->
+        @if (isLoading()) {
+          <div class="space-y-4">
+            @for (i of [1, 2, 3]; track i) {
+              <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 animate-pulse">
+                <div class="flex justify-between mb-4">
+                  <div class="h-4 bg-gray-200 rounded w-32"></div>
+                  <div class="h-6 bg-gray-200 rounded-full w-20"></div>
+                </div>
+                <div class="h-3 bg-gray-200 rounded w-48 mb-2"></div>
+                <div class="h-3 bg-gray-200 rounded w-24"></div>
+              </div>
+            }
+          </div>
+        }
+
+        <!-- Empty state -->
+        @if (!isLoading() && orders().length === 0) {
+          <div class="flex flex-col items-center justify-center py-24">
+            <div class="w-28 h-28 bg-gray-100 rounded-2xl flex items-center justify-center mb-6">
+              <i class="fas fa-box-open text-5xl text-gray-400"></i>
+            </div>
+            <h2 class="text-2xl font-bold text-gray-900 mb-2">No orders yet</h2>
+            <p class="text-gray-500 text-center mb-1">When you place orders, they'll appear here</p>
+            <p class="text-gray-500 text-center mb-8">so you can track them.</p>
+            <button (click)="startShopping()"
+                    class="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-3 rounded-xl font-semibold transition">
+              <i class="fas fa-shopping-bag"></i> Start Shopping
+            </button>
+          </div>
+        }
+
+        <!-- Orders list -->
+        @if (!isLoading() && orders().length > 0) {
+          <div class="space-y-4">
+            @for (order of orders(); track order._id) {
+              <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                <!-- Order header -->
+                <div class="flex flex-wrap items-center justify-between gap-3 px-6 py-4 bg-gray-50">
+                  <div class="flex items-center gap-4">
+                    <div>
+                      <p class="text-xs text-gray-400 uppercase tracking-wide">Order ID</p>
+                      <p class="font-semibold text-gray-800 text-sm">#{{ order._id?.slice(0, 10) }}...</p>
+                    </div>
+                    <div class="hidden sm:block">
+                      <p class="text-xs text-gray-400 uppercase tracking-wide">Date</p>
+                      <p class="font-medium text-gray-700 text-sm">{{ order.createdAt | date:'mediumDate' }}</p>
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <span [class]="'px-3 py-1 rounded-full text-xs font-semibold ' + getStatusColor(order)">
+                      {{ getStatusLabel(order) }}
+                    </span>
+                    <span class="font-bold text-emerald-600">{{ order.totalOrderPrice }} EGP</span>
+                  </div>
+                </div>
+
+                <!-- Order items -->
+                <div class="px-6 py-4">
+                  <div class="flex flex-wrap gap-3 mb-4">
+                    @for (item of order.cartItems?.slice(0, 4); track item._id) {
+                      <div class="flex items-center gap-2">
+                        <img [src]="item.product?.imageCover" [alt]="item.product?.title"
+                             class="w-12 h-12 object-cover rounded-lg border border-gray-100" />
+                      </div>
+                    }
+                    @if (order.cartItems?.length > 4) {
+                      <div class="w-12 h-12 rounded-lg border border-gray-200 bg-gray-50 flex items-center justify-center text-xs text-gray-500 font-medium">
+                        +{{ order.cartItems.length - 4 }}
+                      </div>
+                    }
+                  </div>
+                  <div class="flex flex-wrap items-center justify-between gap-2 text-sm text-gray-500">
+                    <span>{{ order.cartItems?.length }} item(s) &bull; {{ order.paymentMethodType | titlecase }}</span>
+                    <span class="flex items-center gap-1">
+                      <i [class]="order.isDelivered ? 'fas fa-check-circle text-emerald-500' : 'fas fa-clock text-amber-400'"></i>
+                      {{ order.isDelivered ? 'Delivered on ' + (order.deliveredAt | date:'mediumDate') : 'Estimated delivery: 3-5 business days' }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        }
+
+      </main>
+    </div>
+  </div>
+
+</div>

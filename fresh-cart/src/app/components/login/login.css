@@ -1,0 +1,164 @@
+/* Smooth Transitions */
+input, button, a {
+  transition: all 0.3s ease;
+}
+
+/* Input Focus Effects */
+input:focus {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(34, 197, 94, 0.1);
+}
+
+/* Password Toggle Button */
+button[type="button"] {
+  transition: color 0.2s ease;
+}
+
+/* Social Buttons Hover */
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+/* Submit Button */
+button[type="submit"]:not(:disabled):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px -5px rgba(34, 197, 94, 0.4);
+}
+
+/* Gradient Background Animation */
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.bg-gradient-to-br {
+  background-size: 200% 200%;
+  animation: gradientShift 15s ease infinite;
+}
+
+/* Image Float Animation */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+img {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Form Entry Animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+form > div {
+  animation: fadeInUp 0.5s ease-out;
+}
+
+form > div:nth-child(1) { animation-delay: 0.1s; }
+form > div:nth-child(2) { animation-delay: 0.2s; }
+form > div:nth-child(3) { animation-delay: 0.3s; }
+form > div:nth-child(4) { animation-delay: 0.4s; }
+
+/* Icon Pulse */
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.fas, .fab {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* Checkbox Custom Style */
+input[type="checkbox"] {
+  cursor: pointer;
+}
+
+input[type="checkbox"]:checked {
+  background-color: #16a34a;
+  border-color: #16a34a;
+}
+
+/* Link Hover */
+a {
+  transition: color 0.2s ease;
+}
+
+/* Card Shadow */
+.rounded-2xl {
+  box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 1024px) {
+  .lg\:w-1\/2 {
+    width: 100%;
+  }
+  
+  img {
+    max-width: 300px;
+  }
+}
+
+@media (max-width: 640px) {
+  .p-12 {
+    padding: 2rem;
+  }
+  
+  h1 {
+    font-size: 1.5rem;
+  }
+  
+  h3 {
+    font-size: 1.25rem;
+  }
+}
+
+/* Loading State */
+button[disabled] {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Input Icons */
+.absolute i {
+  pointer-events: none;
+}
+
+/* Divider */
+.border-t {
+  border-color: #e5e7eb;
+}
+
+/* Trust Badges */
+.border-gray-200 {
+  border-color: #e5e7eb;
+}

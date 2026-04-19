@@ -1,0 +1,210 @@
+<div class="min-h-screen bg-gray-50">
+
+  <!-- ===== GREEN HEADER BANNER ===== -->
+  <div class="bg-gradient-to-r from-emerald-600 to-emerald-400 text-white">
+    <div class="container mx-auto px-4 py-3 text-sm text-emerald-100">
+      <a routerLink="/home" class="hover:text-white transition">Home</a>
+      <span class="mx-2">/</span>
+      <span class="text-white font-medium">My Account</span>
+    </div>
+    <div class="container mx-auto px-4 pb-8 pt-4 flex items-center gap-4">
+      <div class="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center">
+        <i class="fas fa-user text-3xl text-white"></i>
+      </div>
+      <div>
+        <h1 class="text-3xl font-bold">My Account</h1>
+        <p class="text-emerald-100 mt-1">Manage your addresses and account settings</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== CONTENT ===== -->
+  <div class="container mx-auto px-4 py-8">
+    <div class="flex flex-col lg:flex-row gap-6">
+
+      <!-- ===== SIDEBAR ===== -->
+      <aside class="w-full lg:w-64 shrink-0">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+          <div class="px-4 py-3 bg-gray-50">
+            <h2 class="font-semibold text-gray-700 text-sm uppercase tracking-wide">My Account</h2>
+          </div>
+          <nav class="py-2">
+            @for (link of sidebarLinks; track link.route) {
+              <a [routerLink]="link.route" routerLinkActive="bg-emerald-50 text-emerald-600 border-r-4 border-emerald-600 font-semibold"
+                 class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 transition text-sm">
+                <i [class]="link.icon + ' w-4 text-center'"></i>
+                {{ link.label }}
+                <i class="fas fa-chevron-right ml-auto text-xs text-gray-400"></i>
+              </a>
+            }
+          </nav>
+        </div>
+      </aside>
+
+      <!-- ===== MAIN CONTENT ===== -->
+      <main class="flex-1 space-y-6">
+
+        <!-- Page title -->
+        <div>
+          <h2 class="text-xl font-bold text-gray-800">Account Settings</h2>
+          <p class="text-sm text-gray-500 mt-0.5">
+            Update your <span class="text-emerald-600 font-medium">profile information</span>
+            and change your password
+          </p>
+        </div>
+
+        <!-- ===== PROFILE INFORMATION ===== -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100">
+          <!-- Section header -->
+          <div class="flex items-center gap-3 px-6 py-4 border-b">
+            <div class="w-9 h-9 bg-emerald-100 rounded-full flex items-center justify-center shrink-0">
+              <i class="fas fa-user text-emerald-600 text-sm"></i>
+            </div>
+            <div>
+              <p class="font-semibold text-emerald-600 text-sm">Profile Information</p>
+              <p class="text-xs text-gray-400">Update your personal details</p>
+            </div>
+          </div>
+
+          <form (ngSubmit)="saveProfile()" class="px-6 py-5 space-y-4">
+            <!-- Success -->
+            @if (profileSuccess()) {
+              <div class="flex items-center gap-2 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-lg px-4 py-3 text-sm">
+                <i class="fas fa-check-circle text-emerald-500"></i> Changes saved successfully!
+              </div>
+            }
+            <div>
+              <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Full Name</label>
+              <input type="text" [(ngModel)]="profileData.name" name="name"
+                     class="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 text-sm text-gray-800" />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Email Address</label>
+              <input type="email" [(ngModel)]="profileData.email" name="email"
+                     placeholder="Enter your email"
+                     class="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 text-sm text-gray-800" />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Phone Number</label>
+              <input type="tel" [(ngModel)]="profileData.phone" name="phone"
+                     placeholder="01xxxxxxxx"
+                     class="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 text-sm text-gray-800" />
+            </div>
+            <button type="submit" [disabled]="isSavingProfile()"
+                    class="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-60 text-white px-6 py-2.5 rounded-lg font-medium text-sm transition">
+              @if (isSavingProfile()) {
+                <svg class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+                </svg>
+                Saving...
+              } @else {
+                <i class="fas fa-save"></i> Save Changes
+              }
+            </button>
+          </form>
+        </div>
+
+        <!-- ===== ACCOUNT INFORMATION ===== -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 px-6 py-5">
+          <p class="font-semibold text-emerald-600 text-sm mb-3">Account Information</p>
+          <div class="flex items-center justify-between py-2 border-b border-gray-100">
+            <span class="text-sm text-gray-500">User ID</span>
+            <span class="text-sm text-gray-700 font-medium">{{ authService.userId() || '—' }}</span>
+          </div>
+          <div class="flex items-center justify-between py-2">
+            <span class="text-sm text-gray-500">Role</span>
+            <span class="bg-emerald-100 text-emerald-700 text-xs font-semibold px-3 py-1 rounded-full">User</span>
+          </div>
+        </div>
+
+        <!-- ===== CHANGE PASSWORD ===== -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100">
+          <!-- Section header -->
+          <div class="flex items-center gap-3 px-6 py-4 border-b">
+            <div class="w-9 h-9 bg-amber-100 rounded-full flex items-center justify-center shrink-0">
+              <i class="fas fa-lock text-amber-600 text-sm"></i>
+            </div>
+            <div>
+              <p class="font-semibold text-amber-600 text-sm">Change Password</p>
+              <p class="text-xs text-gray-400">Update your account password</p>
+            </div>
+          </div>
+
+          <form (ngSubmit)="changePassword()" class="px-6 py-5 space-y-4">
+            <!-- Error -->
+            @if (pwError()) {
+              <div class="flex items-center gap-2 bg-red-50 border border-red-200 text-red-700 rounded-lg px-4 py-3 text-sm">
+                <i class="fas fa-exclamation-circle text-red-500"></i> {{ pwError() }}
+              </div>
+            }
+            <!-- Success -->
+            @if (pwSuccess()) {
+              <div class="flex items-center gap-2 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-lg px-4 py-3 text-sm">
+                <i class="fas fa-check-circle text-emerald-500"></i> Password changed successfully!
+              </div>
+            }
+
+            <!-- Current Password -->
+            <div>
+              <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Current Password</label>
+              <div class="relative">
+                <input [type]="showCurrentPw() ? 'text' : 'password'" [(ngModel)]="passwordData.currentPassword" name="currentPassword"
+                       placeholder="Enter your current password"
+                       class="w-full px-4 py-2.5 pr-10 rounded-lg border border-gray-200 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 text-sm" />
+                <button type="button" (click)="showCurrentPw.set(!showCurrentPw())"
+                        class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                  <i [class]="showCurrentPw() ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- New Password -->
+            <div>
+              <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">New Password</label>
+              <div class="relative">
+                <input [type]="showNewPw() ? 'text' : 'password'" [(ngModel)]="passwordData.password" name="password"
+                       placeholder="Enter your new password"
+                       class="w-full px-4 py-2.5 pr-10 rounded-lg border border-gray-200 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 text-sm" />
+                <button type="button" (click)="showNewPw.set(!showNewPw())"
+                        class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                  <i [class]="showNewPw() ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+                </button>
+              </div>
+              <p class="text-xs text-gray-400 mt-1">Must be at least 6 characters</p>
+            </div>
+
+            <!-- Confirm Password -->
+            <div>
+              <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Confirm New Password</label>
+              <div class="relative">
+                <input [type]="showConfirmPw() ? 'text' : 'password'" [(ngModel)]="passwordData.rePassword" name="rePassword"
+                       placeholder="Confirm your new password"
+                       class="w-full px-4 py-2.5 pr-10 rounded-lg border border-gray-200 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 text-sm" />
+                <button type="button" (click)="showConfirmPw.set(!showConfirmPw())"
+                        class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                  <i [class]="showConfirmPw() ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+                </button>
+              </div>
+            </div>
+
+            <button type="submit" [disabled]="isChangingPw()"
+                    class="flex items-center gap-2 bg-amber-500 hover:bg-amber-600 disabled:opacity-60 text-white px-6 py-2.5 rounded-lg font-medium text-sm transition">
+              @if (isChangingPw()) {
+                <svg class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+                </svg>
+                Changing...
+              } @else {
+                <i class="fas fa-lock"></i> Change Password
+              }
+            </button>
+          </form>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+</div>

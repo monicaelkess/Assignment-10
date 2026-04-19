@@ -1,0 +1,259 @@
+<div class="min-h-screen bg-gray-50">
+  <div class="bg-emerald-700">
+    <div class="container mx-auto px-4 py-6">
+      <h1 class="text-3xl font-bold text-white">All Products</h1>
+      <p class="text-white mt-2">Discover our amazing collection</p>
+    </div>
+  </div>
+
+  <div class="container mx-auto px-4 py-8">
+    <div class="flex flex-col lg:flex-row gap-8">
+
+      <!-- Sidebar Filters -->
+      <aside class="lg:w-1/4">
+        <div class="bg-white rounded-lg shadow-sm p-6 sticky top-4">
+          <div class="flex items-center justify-between mb-6">
+            <h2 class="text-xl font-bold text-gray-800">
+              <i class="fas fa-filter mr-2"></i>Filters
+            </h2>
+            <button
+              (click)="resetFilters()"
+              class="text-sm text-emerald-600 hover:text-emerald-800">
+              Reset
+            </button>
+          </div>
+
+          <!-- Search -->
+          <div class="mb-6">
+            <label class="block text-sm font-semibold text-gray-700 mb-2">
+              <i class="fas fa-search mr-2"></i>Search
+            </label>
+            <input
+              type="text"
+              [(ngModel)]="searchTerm"
+              (ngModelChange)="applyFilters()"
+              placeholder="Search products..."
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            />
+          </div>
+
+          <!-- Category -->
+          <div class="mb-6">
+            <label class="block text-sm font-semibold text-gray-700 mb-2">
+              <i class="fas fa-list mr-2"></i>Category
+            </label>
+            <select
+              [(ngModel)]="selectedCategory"
+              (ngModelChange)="applyFilters()"
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            >
+              <option value="">All Categories</option>
+              <option *ngFor="let category of categories()" [value]="category._id">
+                {{ category.name }}
+              </option>
+            </select>
+          </div>
+
+          <!-- Brand -->
+          <div class="mb-6">
+            <label class="block text-sm font-semibold text-gray-700 mb-2">
+              <i class="fas fa-tags mr-2"></i>Brand
+            </label>
+            <select
+              [(ngModel)]="selectedBrand"
+              (ngModelChange)="applyFilters()"
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            >
+              <option value="">All Brands</option>
+              <option *ngFor="let brand of brands()" [value]="brand._id">
+                {{ brand.name }}
+              </option>
+            </select>
+          </div>
+
+          <!-- Price Range -->
+          <div class="mb-6">
+            <label class="block text-sm font-semibold text-gray-700 mb-2">
+              <i class="fas fa-dollar-sign mr-2"></i>Price Range
+            </label>
+            <div class="space-y-3">
+              <div>
+                <label class="text-xs text-gray-600">Min Price: ${{ minPrice }}</label>
+                <input
+                  type="range"
+                  [(ngModel)]="minPrice"
+                  (ngModelChange)="applyFilters()"
+                  min="0"
+                  max="10000"
+                  step="100"
+                  class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                />
+              </div>
+              <div>
+                <label class="text-xs text-gray-600">Max Price: ${{ maxPrice }}</label>
+                <input
+                  type="range"
+                  [(ngModel)]="maxPrice"
+                  (ngModelChange)="applyFilters()"
+                  min="0"
+                  max="10000"
+                  step="100"
+                  class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Sort -->
+          <div class="mb-4">
+            <label class="block text-sm font-semibold text-gray-700 mb-2">
+              <i class="fas fa-sort mr-2"></i>Sort By
+            </label>
+            <select
+              [(ngModel)]="sortBy"
+              (ngModelChange)="applyFilters()"
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            >
+              <option value="default">Default</option>
+              <option value="price-asc">Price: Low to High</option>
+              <option value="price-desc">Price: High to Low</option>
+              <option value="name-asc">Name: A to Z</option>
+              <option value="name-desc">Name: Z to A</option>
+              <option value="rating">Highest Rated</option>
+            </select>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Products Grid -->
+      <main class="lg:w-3/4">
+        <div class="bg-white rounded-lg shadow-sm p-4 mb-6 flex items-center justify-between">
+          <p class="text-gray-600">
+            Showing <span class="font-semibold">{{ getPaginatedProducts().length }}</span>
+            of <span class="font-semibold">{{ filteredProducts().length }}</span> products
+          </p>
+          <div class="flex items-center gap-2">
+            <i class="fas fa-th text-emerald-600"></i>
+            <i class="fas fa-list text-gray-400"></i>
+          </div>
+        </div>
+
+        <!-- Loading -->
+        <div *ngIf="isLoading()" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div *ngFor="let i of [1,2,3,4,5,6]" class="bg-white rounded-lg shadow-sm p-4 animate-pulse">
+            <div class="bg-gray-200 h-48 rounded-lg mb-4"></div>
+            <div class="bg-gray-200 h-4 rounded w-3/4 mb-2"></div>
+            <div class="bg-gray-200 h-4 rounded w-1/2"></div>
+          </div>
+        </div>
+
+        <!-- Products -->
+        <div *ngIf="!isLoading()" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div
+            *ngFor="let product of getPaginatedProducts()"
+            class="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-lg transition-shadow duration-300 group"
+          >
+            <div class="relative overflow-hidden">
+              <a [routerLink]="['/products', product._id]">
+                <img
+                  [src]="product.imageCover"
+                  [alt]="product.title"
+                  class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-300"
+                />
+              </a>
+
+              <button
+                (click)="addToWishlist(product._id)"
+                [class.text-red-500]="isInWishlist(product._id)"
+                class="absolute top-3 right-3 bg-white w-10 h-10 rounded-full flex items-center justify-center shadow-md hover:bg-red-50 transition-colors"
+              >
+                <i [class]="isInWishlist(product._id) ? 'fas fa-heart' : 'far fa-heart'"></i>
+              </button>
+
+              <div *ngIf="product.priceAfterDiscount" class="absolute top-3 left-3 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                SALE
+              </div>
+            </div>
+
+            <div class="p-4">
+              <p class="text-sm text-emerald-600 font-semibold mb-1">{{ product.category.name }}</p>
+
+              <a [routerLink]="['/products', product._id]">
+                <h3 class="font-semibold text-gray-800 mb-2 hover:text-emerald-600 transition-colors line-clamp-2">
+                  {{ product.title }}
+                </h3>
+              </a>
+
+              <div class="flex items-center gap-2 mb-3">
+                <div class="flex text-yellow-400">
+                  <i class="fas fa-star" *ngFor="let star of [1,2,3,4,5]"></i>
+                </div>
+                <span class="text-sm text-gray-600">{{ product.ratingsAverage }}</span>
+                <span class="text-sm text-gray-400">({{ product.ratingsQuantity }})</span>
+              </div>
+
+              <div class="flex items-center justify-between mb-4">
+                <div>
+                  <span class="text-2xl font-bold text-gray-800">${{ product.price }}</span>
+                  <span *ngIf="product.priceAfterDiscount" class="text-sm text-gray-400 line-through ml-2">
+                    ${{ product.priceAfterDiscount }}
+                  </span>
+                </div>
+              </div>
+
+              <button
+                (click)="addToCart(product._id)"
+                class="w-full bg-emerald-600 text-white py-3 rounded-lg hover:bg-emerald-700 transition-colors flex items-center justify-center gap-2 font-semibold"
+              >
+                <i class="fas fa-shopping-cart"></i>
+                Add to Cart
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Empty State -->
+        <div *ngIf="!isLoading() && filteredProducts().length === 0" class="text-center py-16">
+          <i class="fas fa-box-open text-6xl text-gray-300 mb-4"></i>
+          <h3 class="text-xl font-semibold text-gray-600 mb-2">No products found</h3>
+          <p class="text-gray-500 mb-4">Try adjusting your filters</p>
+          <button (click)="resetFilters()" class="bg-emerald-600 text-white px-6 py-2 rounded-lg hover:bg-emerald-700">
+            Reset Filters
+          </button>
+        </div>
+
+        <!-- Pagination -->
+        <div *ngIf="!isLoading() && totalPages > 1" class="mt-8 flex justify-center">
+          <nav class="flex items-center gap-2">
+            <button
+              (click)="changePage(currentPage - 1)"
+              [disabled]="currentPage === 1"
+              class="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <i class="fas fa-chevron-left"></i>
+            </button>
+
+            <button
+              *ngFor="let page of getPageNumbers()"
+              (click)="changePage(page)"
+              [class.bg-emerald-600]="currentPage === page"
+              [class.text-white]="currentPage === page"
+              [class.bg-white]="currentPage !== page"
+              class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+            >
+              {{ page }}
+            </button>
+
+            <button
+              (click)="changePage(currentPage + 1)"
+              [disabled]="currentPage === totalPages"
+              class="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <i class="fas fa-chevron-right"></i>
+            </button>
+          </nav>
+        </div>
+      </main>
+    </div>
+  </div>
+</div>
