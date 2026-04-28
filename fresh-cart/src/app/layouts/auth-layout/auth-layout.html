@@ -1,1 +1,79 @@
-<p>auth-layout works!</p>
+<div class="min-h-screen bg-[#f0f2f5] flex items-center py-10 px-4">
+  <div class="w-full max-w-6xl mx-auto flex flex-col lg:flex-row gap-10 items-start">
+
+    <!-- Left Column -->
+    <div class="flex-1">
+      <h1 class="text-6xl font-extrabold text-[#1a3566] mb-3 leading-tight">Route Posts</h1>
+      <p class="text-lg text-gray-700 mb-8 max-w-sm leading-snug">
+        Connect with friends and the world around you on Route Posts.
+      </p>
+
+      <!-- About Route Academy Card -->
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <p class="text-blue-600 font-semibold text-xs tracking-widest uppercase mb-2">About Route Academy</p>
+        <h2 class="text-lg font-bold text-gray-900 mb-3">Egypt's Leading IT Training Center Since 2012</h2>
+        <p class="text-gray-500 text-sm mb-6 leading-relaxed">
+          Route Academy is the premier IT training center in Egypt, established in 2012. We specialize in
+          delivering high-quality training courses in programming, web development, and application
+          development. We've identified the unique challenges people may face when learning new technology
+          and made efforts to provide strategies to overcome them.
+        </p>
+
+        <!-- Stats Grid -->
+        <div class="grid grid-cols-3 gap-3">
+          <div class="border border-gray-200 rounded-lg p-3">
+            <p class="text-xl font-bold text-gray-900">2012</p>
+            <p class="text-[10px] text-gray-400 uppercase tracking-widest font-semibold mt-0.5">Founded</p>
+          </div>
+          <div class="border border-gray-200 rounded-lg p-3">
+            <p class="text-xl font-bold text-gray-900">40K+</p>
+            <p class="text-[10px] text-gray-400 uppercase tracking-widest font-semibold mt-0.5">Graduates</p>
+          </div>
+          <div class="border border-gray-200 rounded-lg p-3">
+            <p class="text-xl font-bold text-gray-900">50+</p>
+            <p class="text-[10px] text-gray-400 uppercase tracking-widest font-semibold mt-0.5">Partner Companies</p>
+          </div>
+          <div class="border border-gray-200 rounded-lg p-3">
+            <p class="text-xl font-bold text-gray-900">5</p>
+            <p class="text-[10px] text-gray-400 uppercase tracking-widest font-semibold mt-0.5">Branches</p>
+          </div>
+          <div class="border border-gray-200 rounded-lg p-3">
+            <p class="text-xl font-bold text-gray-900">20</p>
+            <p class="text-[10px] text-gray-400 uppercase tracking-widest font-semibold mt-0.5">Diplomas Available</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column - Auth Card -->
+    <div class="w-full lg:w-[440px] flex-shrink-0">
+      <div class="bg-white rounded-2xl shadow-md overflow-hidden">
+        <!-- Tabs -->
+        <div class="flex border-b border-gray-200">
+          <a
+            routerLink="/login"
+            [class]="router.url.includes('/login')
+              ? 'flex-1 text-center py-4 text-sm font-bold text-gray-900 bg-white border-b-2 border-[#1a3566] -mb-px'
+              : 'flex-1 text-center py-4 text-sm text-gray-500 bg-gray-50 hover:bg-gray-100 transition-colors'"
+          >
+            Login
+          </a>
+          <a
+            routerLink="/register"
+            [class]="router.url.includes('/register')
+              ? 'flex-1 text-center py-4 text-sm font-bold text-gray-900 bg-white border-b-2 border-[#1a3566] -mb-px'
+              : 'flex-1 text-center py-4 text-sm text-gray-500 bg-gray-50 hover:bg-gray-100 transition-colors'"
+          >
+            Register
+          </a>
+        </div>
+
+        <!-- Form Content -->
+        <div class="p-8">
+          <router-outlet />
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

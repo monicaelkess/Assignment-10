@@ -90,7 +90,7 @@ export class RegisterComponent {
       next: () => {
         this.isLoading.set(false);
         alert('Registration successful! Please login.');
-        this.router.navigate(['/auth/login']);
+        this.router.navigate(['/login']);
       },
       error: (err) => {
         this.isLoading.set(false);

@@ -9,5 +9,5 @@ import { ToastComponent } from './components/toast/toast';
   styleUrl: './app.css'
 })
 export class App {
-  protected readonly title = signal('fresh-cart');
+  protected readonly title = signal('route-posts');
 }
